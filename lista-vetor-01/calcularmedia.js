@@ -4,9 +4,8 @@ let b = 0
 
 for (let i = 0; i < nums.length; i++) {
     c = c + nums[i]
-    b = b + 1
 }
 
-let a = c / b
+let a = c / nums.length
 
 console.log("A média é:", a)
