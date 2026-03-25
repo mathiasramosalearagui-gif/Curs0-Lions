@@ -1,5 +1,5 @@
 let nums = [22, 12, 8, 4, 5, 15]
-let a = 0
+let a = nums[0]
 
 for (let i = 0; i < nums.length; i++) {
     if (nums[ i ]> a) {
