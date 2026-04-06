@@ -82,8 +82,111 @@ function mostrarMenu() {
             realizarAluguel();
         } else if (opcao === "12") {
             devolverCarro();
+        } else if (opcao === "13") {
+            listarHistoricoDeAtivos();
+        } else if (opcao === "14") {
+            console.log("\n============================")
+            console.log("1 - Listar todos os Alugueis")
+            console.log("2 - Listar Alugueis finalizados")
+            console.log("3 - Voltar")
+            console.log("============================")
+
+            rl.question("Selecione uma opção:", (selecionado) => {
+                if (selecionado === "3") {
+                    console.log("Voltendo...")
+                    mostrarMenu();
+                    return;
+                }
+
+                if (selecionado === "2") {
+                    listarAlugueisFinalizados();
+                }
+
+                if (selecionado === "1") {
+                    listarTodosAlugueis();
+                }
+            })
         }
     })
+}
+
+
+function listarTodosAlugueis() {
+    console.log("Listar todos os Alugueis")
+
+    if (alugueis.length === 0) {
+        console.log("ERRO n°153: Não foram encontrados Alugueis")
+        mostrarMenu()
+        return;
+    }
+
+    console.log("Esses são todos os Alugueis")
+
+    for(let i = 0; i < alugueis.length; i++) {
+        console.log("\nID:" + alugueis[i].id)
+        console.log("ID do Cliente:" + alugueis[i].idCliente)
+        console.log("ID do Carro:" + alugueis[i].idCarro)
+        console.log("Dias:" + alugueis[i].dias)
+        console.log("Total:" + alugueis[i].total)
+        console.log("Status:" + alugueis[i].status)
+    }
+
+    mostrarMenu();
+    return;
+}
+
+
+function listarAlugueisFinalizados() {
+    console.log("Listar Alugueis finalizados")
+
+    if (alugueis.length === 0) {
+        console.log("ERRO n°152: Não foram encontrados Alugueis finalizados")
+        mostrarMenu()
+        return;
+    }
+
+    console.log("Esses são todos os Alugueis finalizados:")
+
+    for(let i = 0; i < alugueis.length; i++) {
+        if (alugueis[i].status === "finalizado") {
+            console.log("\nID:" + alugueis[i].id)
+            console.log("ID do Cliente:" + alugueis[i].idCliente)
+            console.log("ID do Carro:" + alugueis[i].idCarro)
+            console.log("Dias:" + alugueis[i].dias)
+            console.log("Total:" + alugueis[i].total)
+            console.log("Status:" + alugueis[i].status)
+        }
+    }
+
+    mostrarMenu();
+    return;    
+}
+
+
+function listarHistoricoDeAtivos() {
+    console.log("Listar Alugueis ativos")
+
+    if (alugueis.length === 0) {
+        console.log("ERRO n°151: Não foram encontrados Alugueis ativos")
+        mostrarMenu()
+        return;
+    }
+
+    console.log("Esses são todos os Alugueis ativos")
+
+    for(let i = 0; i < alugueis.length; i++) {
+        if (alugueis[i].status === "ativo") {
+            console.log("\nID:" + alugueis[i].id)
+            console.log("ID do Cliente:" + alugueis[i].idCliente)
+            console.log("ID do Carro:" + alugueis[i].idCarro)
+            console.log("Dias:" + alugueis[i].dias)
+            console.log("Total:" + alugueis[i].total)
+            console.log("Status:" + alugueis[i].status)
+        }
+    }
+
+    mostrarMenu();
+    return;
 }
 
 function devolverCarro() {
@@ -121,8 +224,10 @@ function devolverCarro() {
                 return;
             }
 
+            let algo = +aluguel.idCarro;
+
             aluguel.status = "finalizado";
-            let id2 = aluguel.idCarro;
+            let id2 = algo;
             let carro = encontrarCarroPorId(id2)
             carro.disponivel = true;
 
@@ -226,7 +331,7 @@ function removerCliente() {
             console.log("\nExcluindo...")
 
             for (let i = 0; i < clientes.length; i++) {
-                if (clientes[i].id === id) {
+                if (clientes[i].id === id1) {
                     clientes.splice(i, 1);
                     a = true
                     break;
@@ -251,7 +356,7 @@ function atualizarCliente() {
     rl.question("Digite o ID do Cliente que deseja atualizar:", (id1) => {
         id1 = Number(id1)
 
-        let cliente = encontrarClientePorId(id)
+        let cliente = encontrarClientePorId(id1)
 
         if (cliente === null) {
             console.log("ERRO n°012: Carro, Cliente ou Aluguel não encontrado ou ID incorreto")
@@ -414,7 +519,7 @@ function removerCarro() {
             let a = false
 
             for (let i = 0; i < carros.length; i++) {
-                if (carros[i].id === id) {
+                if (carros[i].id === id2) {
                     carros.splice(i, 1);
                     a = true
                     break;
@@ -440,7 +545,7 @@ function atualizarCarro() {
     rl.question("Digite o ID do Carro que deseja atualizar:", (id2) => {
         id2 = Number(id2)
 
-        let carro = encontrarCarroPorId(id)
+        let carro = encontrarCarroPorId(id2)
 
         if (carro === null) {
             console.log("ERRO n°012: Carro, Cliente ou Aluguel não encontrado ou ID incorreto")
