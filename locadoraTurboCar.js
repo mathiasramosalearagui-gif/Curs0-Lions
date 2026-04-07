@@ -9,7 +9,7 @@ let proximoIdCarro = 1;
 let clientes = [];
 let proximoIdCliente = 1;
 
-let alugueis = [];
+let alugueis = []; 
 let proximoIdAluguel = 1;
 
 function mostrarMenu() {
@@ -42,7 +42,7 @@ function mostrarMenu() {
     console.log("15 - Realizar Aluguel")
     console.log("16 - Devolver Carro")
     console.log("17 - Listar Alugueis ativos")
-    console.log("18 - Listar histórico (de finalizados)")
+    console.log("18 - Listar histórico")
     console.log("\n====================================")
     console.log("OUTROS")
     console.log("====================================")
@@ -50,6 +50,7 @@ function mostrarMenu() {
     console.log("02 - Resumo do estoque")
     console.log("03 - Listar Clientes com total")
     console.log("04 - Listar Alugueis com o total aberto")
+    console.log("05 - Relatório geral do Sistema")
     console.log("\n")
 
     rl.question("Selecione uma opção:", (opcao) => {
@@ -102,7 +103,7 @@ function mostrarMenu() {
 
             rl.question("Selecione uma opção:", (selecionado) => {
                 if (selecionado === "3") {
-                    console.log("Voltendo...")
+                    console.log("Voltando...")
                     mostrarMenu();
                     return;
                 }
@@ -129,16 +130,117 @@ function mostrarMenu() {
             listarClientesComTotal();
         } else if (opcao === "04") {
             listarAlugueisComTotalAberto()
+        } else if (opcao === "05") {
+            relatorioGeralDoSistema()
         }
     })
+}
+
+function relatorioGeralDoSistema() {
+    console.log("Relatório geral do Sistema")
+
+    if (carros.length === 0) {
+        console.log("ERRO n°012: Carro, Cliente ou Aluguel não encontrado ou ID incorreto")
+    } else {
+
+        let a1 = 0
+
+        for (let i = 0; i < carros.length; i++) {
+            if (i === carros.length) {
+                break;
+            }
+            if (carros) {
+                a1++
+            }
+        }
+
+        console.log("Existe um total de ", a1, " Carros")
+    }
+
+    if (clientes.length === 0) {
+        console.log("ERRO n°012: Carro, Cliente ou Aluguel não encontrado ou ID incorreto")
+    } else {
+
+        let a2 = 0
+
+        for (let j = 0; j < clientes.length; j++) {
+            if (j === clientes.length) {
+                break;
+            }
+            if (clientes) {
+                a2++
+            }
+        }
+
+        console.log("Existe um total de ", a2, " Clientes")
+    }
+
+    if (alugueis.length === 0) {
+        console.log("ERRO n°012: Carro, Cliente ou Aluguel não encontrado ou ID incorreto")
+    } else {
+
+        let a3 = 0
+
+        for (let k = 0; alugueis.length; k++) {
+            if (k === alugueis.length) {
+                break;
+            }
+            if (alugueis) {
+                a3++
+            }
+        }
+
+        console.log("Existe um total de ", a3, " Alugueis")
+    }
+
+    let c1 = 0
+
+    for (let l = 0; alugueis.length; l++) {
+        if (l === alugueis.length) {
+            break;
+        }
+
+        if (alugueis[l].status === "finalizado") {
+            c1 = c1 + alugueis[l].total
+        }
+    }
+
+    if (c1 === 0) {
+        console.log("ERRO n°188: Não foi encontrado um faturamento total")
+    } else {
+        console.log("O faturamento total é de:" + c1)
+    }
+
+    mostrarMenu();
+    return;
 }
 
 function listarAlugueisComTotalAberto() {
     console.log("Listar Alugueis com total aberto")
 
+    let c = 0
+
     for (let i = 0; alugueis.length; i++) {
-        
+        if (i === alugueis.length) {
+            break;
+        }
+        if (alugueis[i].status === "ativo") {
+            console.log("\nID do Aluguel:" + alugueis[i].id)
+            console.log("ID do Cliente:" + alugueis[i].idCliente)
+            console.log("ID do Carro:" + alugueis[i].idCarro)
+            console.log("Dias:" + alugueis[i].dias)
+            console.log("Total:" + alugueis[i].total)
+            console.log("Status:" + alugueis[i].status)
+            c++
+        }
     }
+
+    if (c === 0) {
+        console.log("ERRO n°012.3: Não foram encontrados Alugueis ativos")
+    }
+
+    mostrarMenu();
+    return;
 }
 
 function listarClientesComTotal() {
@@ -469,15 +571,14 @@ function devolverCarro() {
                 return;
             }
 
-            let algo = +aluguel.idCarro;
+            let id2 = +aluguel.idCarro;
 
             aluguel.status = "finalizado";
-            let id2 = algo;
             let carro = encontrarCarroPorId(id2)
             carro.disponivel = true;
 
-            carros.push(carro);
-            alugueis.push(aluguel)
+            carros[(carro.id - 1)].disponivel = true
+            alugueis[(aluguel.id - 1)].status = "finalizado"
 
             console.log("Ação realizada com sucesso")
             mostrarMenu();
@@ -523,6 +624,14 @@ function realizarAluguel() {
                     return;
                 }
 
+                let vc = encontrarCarroPorId(id2)
+
+                if (vc.disponivel === false) {
+                    console.log("ERRO n°731: Esse Carro já está alugado")
+                    mostrarMenu();
+                    return;
+                }
+
                 let total = (carro.precoPorDia) * dias;
 
                 let aluguel = {
@@ -537,7 +646,7 @@ function realizarAluguel() {
                 carro.disponivel = false;
 
                 alugueis.push(aluguel);
-                carros.push(carro)
+                carros[(carro.id - 1)].disponivel = false
                 proximoIdAluguel++;
                 console.log("Ação realizada com sucesso");
                 mostrarMenu();
@@ -1033,5 +1142,3 @@ function encontrarCarroPorPlaca(placa) {
     return null;
 }
 mostrarMenu();
-
-
